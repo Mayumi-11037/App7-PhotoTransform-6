@@ -129,6 +129,34 @@
           drawImageIOSFix(context,img, 0, 0, img.naturalWidth, img.naturalHeight, 0, 0, 600, 500); /* Draw original image on first canvas. */
 
           /*  +++++++++++++++ BEGIN IMAGE PROCESSING +++++++++++++++ */
+        
+            /* Step 1: Draw same image onto second canvas. */
+            drawImageIOSFix(context2, img, 0, 0, img.naturalWidth, img.naturalHeight, 0, 0, 600, 500);
+
+            /* Step 2: Get pixel data from second canvas. */
+            var imageData = context2.getImageData(0, 0, canvas2.width, canvas2.height);
+
+            /* Step 3: Access pixel array. */
+            var data = imageData.data;
+
+            /* Step 4: Loop through every pixel. */
+            for (var i = 0; i < data.length; i += 4) {
+
+              /* Log pixel index for debugging. */
+              console.log("Processing pixel index: " + i);
+
+              /* Remove RED value */
+              data[i] = 0;
+
+              /* Remove GREEN value */
+              data[i + 1] = 0;
+
+              /* Keep BLUE value and ALPHA value unchanged. */
+            }
+
+            /* Step 5: Put modified image back. */
+            context2.putImageData(imageData, 0, 0);
+         
           /*  ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
           /* PUT ANY CHANGES TO THE JAVASCRIPT HERE  */
@@ -154,24 +182,45 @@
  </head>
 
  <body>
-  <div data-role="page">
+   <div data-role="page"> <!-- Main app page. -->
+   
     <div data-role="header">
-    <h1>Primary Colors</h1></div><!-- /header -->
-    <div data-role="content">	
-      <h2>Push button to take picture.</h2>
-      <div>
+      <h1>Primary Colors</h1>
+    </div> <!-- /header -->
+   
+    <div data-role="content">	<!-- Main content. -->
+     
+      <h2>Push button to take picture.</h2> <!-- Instructions. -->
+     
+      <div> <!-- File upload button. -->
         Press orange button to create or choose image file:
         <input type="file" id="fileInput" STYLE="background-color: #FF6600;">
       </div>
-      <div id="messageDisplayArea"></div>
+     
+      <div id="messageDisplayArea"></div> <!-- Message display area. -->
       
-      <canvas id="myCanvas" width=600 height=500 style="border:1px solid #d3d3d3;"></canvas>
+      <canvas id="myCanvas" width=600 height=500 style="border:1px solid #d3d3d3;"></canvas> <!-- Original image -->
+     
       <script> /* This script initiates the cavas and puts the text on the canvas "myCanvas" */
         var canvas = document.getElementById('myCanvas');
         var context = canvas.getContext("2d");
         context.font = '20pt Calibri';
         context.fillStyle = "black";
         context.fillText("Original image will go here", 10, 20);
+      </script>
+
+     <!-- Blue-only image. -->
+      <canvas id="blueCanvas" width=600 height=500 style="border:3px solid blue;"></canvas>
+
+      <script>
+        /* Initialize second canvas. */
+        var canvas2 = document.getElementById('blueCanvas');
+        var context2 = canvas2.getContext("2d");
+
+        /* Add identifying label. */
+        context2.font = '20pt Calibri';
+        context2.fillStyle = "blue";
+        context2.fillText("Blue intensity image will appear here", 10, 20);
       </script>
 
     </div><!-- /content -->
